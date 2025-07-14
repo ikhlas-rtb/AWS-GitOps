@@ -6,8 +6,9 @@ pipeline {
     }
     stages {
         stage('Build Image') {
+		// v2 - fixed docker build path
             steps {
-                sh "docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:latest ."
+                sh "docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:latest flask/"
             }
         }
         stage('Dockerhub Login') {
