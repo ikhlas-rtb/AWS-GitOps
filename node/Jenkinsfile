@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    
+    environment { 
+        IMAGE_NAME = 'node-app'
+        DOCKERHUB_USER = 'ikhlasrtb'
+    }
+    stages {
+        stage('Build Image') {
+            steps { 
+                script {
+                    sh "docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:latest ."
+
+                }
+            }
+        }
+        stage(DockerHub Login) {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
+                    sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
+                }
+            }
+        }
+
+        stage('push to Dockerhub') {
+            steps {
+                sh "docker push ${DOCKERUSER}/{IMAGE_NAMER}:latest"
+            }
+        }
+    }
+}
